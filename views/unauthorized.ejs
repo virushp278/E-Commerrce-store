@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include("./partials/head") %>
+  <title>Unauthorized</title>
+</head>
+<body>
+  <%- include("./partials/nav") %>
+
+  <div class="container mt-5 text-center">
+    <h1 class="text-danger">Access Denied</h1>
+    <p><%= message %></p>
+    <a href="/" class="btn btn-primary mt-3">Go Home</a>
+  </div>
+
+  <%- include("./partials/script") %>
+</body>
+</html>

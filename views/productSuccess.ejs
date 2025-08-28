@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include("./partials/head") %>
+    <title>Product Created - Success</title>
+</head>
+<body>
+
+    <%- include("./partials/merchantDashNav") %>
+
+    <div class="container mt-5 pt-5">
+        <!-- Success Message -->
+        <div class="card shadow-lg p-4 text-center">
+            <h2 class="text-success mb-4">🎉 Product Created Successfully!</h2>
+
+            <h4 class="mb-3"><%= product.productName %></h4>
+
+            <% if (product.ProductImage) { %>
+                <img src="<%= product.ProductImage %>" alt="Product Image" class="img-fluid mb-4 rounded" style="max-height: 250px; object-fit: contain;">
+            <% } %>
+
+            <!-- Reference ID -->
+            <div class="mb-3">
+                <strong>Reference ID:</strong>
+                <span id="refId" class="ms-2"><%= product.referenceId %></span>
+                <button class="btn btn-sm btn-outline-primary ms-2" onclick="copyRefId()">Copy</button>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-flex justify-content-center gap-3 mt-4">
+                <a href="/product/<%= product._id %>" class="btn btn-primary">View Product Page</a>
+                <a href="/merchant/dashboard" class="btn btn-secondary">Go to Dashboard</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function copyRefId() {
+            const refId = document.getElementById('refId').innerText;
+            navigator.clipboard.writeText(refId).then(() => {
+                alert("Reference ID copied to clipboard!");
+            }).catch(err => {
+                alert("Failed to copy: " + err);
+            });
+        }
+    </script>
+
+    <%- include("./partials/script") %>
+
+</body>
+</html>

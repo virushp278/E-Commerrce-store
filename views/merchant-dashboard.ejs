@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include("./partials/head") %>
+    <title>Dashboard-Merchant</title>
+</head>
+<body>
+    
+    <%- include("./partials/merchantDashNav") %>
+
+    <div class="container mt-5 pt-5">
+        <!-- Welcome Message -->
+        <h1>Welcome, <%= user.ownerName %> 👋</h1>
+        <p class="text-muted">Here’s an overview of your store's performance and actions.</p>
+
+        <!-- Summary Cards -->
+        <div class="row mt-4">
+            <div class="col-md-3">
+                <div class="card text-white bg-primary mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Products</h5>
+                        <p class="card-text">25</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white bg-success mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Orders Received</h5>
+                        <p class="card-text">120</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white bg-warning mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Pending Shipments</h5>
+                        <p class="card-text">5</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white bg-danger mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Messages</h5>
+                        <p class="card-text">3</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Action Buttons -->
+        <div class="mt-4">
+            <a href="/merchant/product/addProduct" class="btn btn-outline-primary me-2">Add Product</a>
+            <a href="/merchant/my-products" class="btn btn-outline-secondary me-2">Manage Products</a>
+            <a href="/merchant/orders" class="btn btn-outline-success">View Orders</a>
+        </div>
+    </div>
+
+    <%- include("./partials/script") %>
+    
+</body>
+</html>

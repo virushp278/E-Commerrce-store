@@ -1,0 +1,105 @@
+<%- include('./partials/head') %>
+<%- include('./partials/nav') %>
+
+<div class="container my-5">
+    <h2>Buy Product</h2>
+
+    <!-- Product Summary -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="col-md-5">
+                    <img src="<%= product.ProductImage %>" class="img-fluid rounded" alt="Product Image">
+                </div>
+            <h4><%= product.productName %></h4>
+            <p><%= product.description %></p>
+            <p><strong>Price:</strong> ₹<%= product.price %></p>
+        </div>
+    </div>
+
+    <form action="/orders/buy" method="POST">
+        <input type="hidden" name="productId" value="<%= product._id %>">
+
+        <div class="mb-3">
+            <label for="quantity" class="form-label">Quantity:</label>
+            <input type="number" name="quantity" id="quantity" class="form-control" value="1" min="1" required>
+        </div>
+
+        <% if (user.addresses && user.addresses.length > 0) { %>
+            <div class="mb-4">
+                <label class="form-label">Choose a saved address:</label>
+                <% user.addresses.forEach((addr, index) => { %>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="useSavedAddress" value="<%= index %>" id="addr<%= index %>">
+                        <label class="form-check-label" for="addr<%= index %>">
+                            <%= addr.street %>, <%= addr.city %>, <%= addr.state %>, <%= addr.zipCode %>, <%= addr.country %>
+                            <% if (addr.landmark) { %> (Landmark: <%= addr.landmark %>) <% } %>
+                        </label>
+                    </div>
+                <% }) %>
+            </div>
+        <% } %>
+
+        <div class="form-check mb-3">
+            <input class="form-check-input" type="radio" name="useSavedAddress" value="new" id="newAddress" checked>
+            <label class="form-check-label" for="newAddress">
+                Enter a new shipping address
+            </label>
+        </div>
+
+        <!-- New Address Fields -->
+        <div id="newAddressFields">
+            <div class="mb-3">
+                <label class="form-label">Street</label>
+                <input type="text" class="form-control" name="shippingAddress[street]" placeholder="Street" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Landmark (optional)</label>
+                <input type="text" class="form-control" name="shippingAddress[landmark]" placeholder="Landmark">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">City</label>
+                <input type="text" class="form-control" name="shippingAddress[city]" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">State</label>
+                <input type="text" class="form-control" name="shippingAddress[state]" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">ZIP Code</label>
+                <input type="text" class="form-control" name="shippingAddress[zipCode]" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Country</label>
+                <input type="text" class="form-control" name="shippingAddress[country]" required>
+            </div>
+        </div>
+
+        <button class="btn btn-success mt-3" type="submit">Confirm & proceed to payment</button>
+    </form>
+</div>
+
+<%- include('./partials/script') %>
+
+<script>
+    // Toggle new address form
+    const addressRadios = document.querySelectorAll('input[name="useSavedAddress"]');
+    const newAddressFields = document.getElementById('newAddressFields');
+
+    addressRadios.forEach(radio => {
+        radio.addEventListener('change', () => {
+            if (radio.value === 'new') {
+                newAddressFields.style.display = 'block';
+            } else {
+                newAddressFields.style.display = 'none';
+            }
+        });
+    });
+
+    // Hide fields initially if a saved address is selected
+    window.addEventListener('DOMContentLoaded', () => {
+        const selected = document.querySelector('input[name="useSavedAddress"]:checked');
+        if (selected && selected.value !== 'new') {
+            newAddressFields.style.display = 'none';
+        }
+    });
+</script>

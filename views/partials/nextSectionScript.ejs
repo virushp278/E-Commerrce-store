@@ -1,0 +1,83 @@
+<script>
+    let currentStep = 1;
+
+    function updateProgress(step) {
+      const progressBar = document.getElementById('progressBar');
+      const percent = step === 1 ? 33 : step === 2 ? 66 : 100;
+      progressBar.style.width = percent + '%';
+      progressBar.innerText = `Step ${step} of 3`;
+    }
+
+    function nextStep(current) {
+      const currentSection = document.getElementById(`step${current}`);
+      const inputs = currentSection.querySelectorAll("input[required], textarea[required]");
+
+      let allValid = true;
+      inputs.forEach(input => {
+        if (!input.value) {
+          input.classList.add("is-invalid");
+          allValid = false;
+        } else {
+          input.classList.remove("is-invalid");
+        }
+      });
+
+      if (allValid) {
+        currentSection.classList.remove("active");
+        const next = document.getElementById(`step${current + 1}`);
+        if (next) {
+          next.classList.add("active");
+          updateProgress(current + 1);
+          currentStep = current + 1;
+        }
+      }
+    }
+
+    function prevStep(current) {
+      document.getElementById(`step${current}`).classList.remove("active");
+      const prev = document.getElementById(`step${current - 1}`);
+      if (prev) {
+        prev.classList.add("active");
+        updateProgress(current - 1);
+        currentStep = current - 1;
+      }
+    }
+
+    // Image preview handlers
+    document.getElementById("ProductImage").addEventListener("change", function () {
+      const preview = document.getElementById("mainImagePreview");
+      preview.innerHTML = "";
+      const file = this.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const img = document.createElement("img");
+          img.src = e.target.result;
+          preview.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    document.getElementById("addImages").addEventListener("change", function () {
+      const preview = document.getElementById("extraImagePreview");
+      preview.innerHTML = "";
+      Array.from(this.files).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const img = document.createElement("img");
+          img.src = e.target.result;
+          preview.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+
+    // Initialize Bootstrap tooltips
+    document.addEventListener("DOMContentLoaded", () => {
+      const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+      tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+        new bootstrap.Tooltip(tooltipTriggerEl);
+      });
+    });
+  </script>

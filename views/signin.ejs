@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("./partials/head") %>
+    <title>Sign-In</title>
+</head>
+
+<body>
+    <%- include("./partials/nav") %>
+
+    <div class="container min-vh-100 d-flex justify-content-center align-items-center">
+        <div class="w-100" style="max-width: 400px;">
+            <h3 class="text-center mb-4">Welcome Back</h3>
+            <h5 class="text-center mb-4" >Login Here!</h5>
+            <form action="/user/signin" method="post">
+                <div class="mb-3">
+                    <label for="Email" class="form-label">Email address</label>
+                    <input type="email" name="email" class="form-control" id="Email" aria-describedby="email">
+                </div>
+
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" name="password" id="exampleInputPassword1">
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">Log In</button>
+            </form>
+
+            <div class="mt-3 text-center">
+                <p class="mb-1">Don't have an account? <a href="/user/signup">Create one</a></p>
+                <small class="text-muted">
+                    <a href="/merchant/merchant-signin">Merchant / Seller login</a>
+                </small>
+            </div>
+        </div>
+    </div>
+
+    <%- include("./partials/script") %>
+</body>
+
+</html>

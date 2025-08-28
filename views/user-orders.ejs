@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("./partials/head") %>
+    <title>My Orders</title>
+</head>
+
+<body>
+    <%- include("./partials/nav") %>
+
+    <div class="container mt-5 pt-5">
+        <h2 class="text-center mb-4">My Orders</h2>
+
+        <% if (orders && orders.length > 0) { %>
+            <% orders.forEach(order => { %>
+                <div class="card mb-4 shadow border border-2 border-secondary-subtle">
+                    <div class="card-body">
+                        <h5 class="card-title text-success">
+                            Order ID: <%= order._id %>
+                        </h5>
+                        <p class="mb-2">
+                            <strong>Product:</strong> <%= order.product.productName %> <br>
+                            <strong>Quantity:</strong> <%= order.quantity %> <br>
+                            <strong>Total Amount:</strong> ₹<%= order.totalAmount %> <br>
+                            <strong>Status:</strong> 
+                            <span class="badge 
+                                <%= order.status === 'PLACED' ? 'bg-primary' : 
+                                    order.status === 'SHIPPED' ? 'bg-warning' : 
+                                    order.status === 'DELIVERED' ? 'bg-success' : 
+                                    'bg-danger' %>">
+                                <%= order.status %>
+                            </span>
+                        </p>
+
+                        <div class="mt-3">
+                            <h6>Shipping Address:</h6>
+                            <% order.shippingAddress.forEach(addr => { %>
+                                <p class="mb-0">
+                                    <%= addr.street %>, 
+                                    <%= addr.landmark ? addr.landmark + ', ' : '' %>
+                                    <%= addr.city %>, <%= addr.state %>, 
+                                    <%= addr.country %> - <%= addr.zipCode %>
+                                </p>
+                            <% }) %>
+                        </div>
+
+                        <p class="mt-3 text-muted">
+                            Placed At: <%= new Date(order.placedAt).toLocaleString() %>
+                        </p>
+                    </div>
+                </div>
+            <% }) %>
+        <% } else { %>
+            <div class="alert alert-info text-center">
+                You have no orders yet.
+            </div>
+        <% } %>
+    </div>
+
+    <%- include("./partials/script") %>
+</body>
+
+</html>

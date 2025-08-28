@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include("./partials/head") %>
+    <title>Sign-Up</title>
+</head>
+<body>
+    <%- include("./partials/nav") %>
+
+    <div class="container min-vh-100 d-flex justify-content-center align-items-center">
+        <div class="w-100" style="max-width: 500px;">
+            <h3 class="text-center mb-4">Create Account</h3>
+            <form action="/user/signup" method="post">
+                <div class="mb-3">
+                    <label for="fullname" class="form-label">Full Name:</label>
+                    <input type="text" name="fullname" class="form-control" id="fullname" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="Email" class="form-label">Email address</label>
+                    <input type="email" name="email" class="form-control" id="Email" required>
+                    <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" name="password" id="password" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="dob" class="form-label">Date of Birth</label>
+                    <input type="date" class="form-control" name="dob" id="dob" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">Create Account</button>
+            </form>
+
+            <div class="mt-3 text-center">
+                <p>Already have an account? <a href="/user/signin">Log in</a></p>
+                <small class="text-muted d-block mt-2">
+                    Want to sell your products? <a href="/merchant/merchant-signup">Sign up as Merchant</a>
+                </small>
+            </div>
+        </div>
+    </div>
+
+    <%- include("./partials/script") %>
+</body>
+</html>

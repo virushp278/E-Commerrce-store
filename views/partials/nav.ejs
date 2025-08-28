@@ -1,0 +1,91 @@
+<nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
+  <div class="container-fluid">
+    <a class="navbar-brand d-flex align-items-center" href="/" style="padding-left: 10px;">
+      <img src="./images/Your.jpg" width="30" height="24" class="d-inline-block align-text-top me-2">
+      Your E-Store
+    </a>
+
+    <!-- Navbar Toggler for small screens -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo03"
+      aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+      <form class="d-flex mx-auto" style="width: 60%;" role="search">
+        <input type="text" class="form-control me-2" placeholder="Search" aria-label="Search" aria-describedby="button-addon2">
+        <button class="btn btn-outline-primary" type="button" id="button-addon2">Search</button>
+      </form>
+
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <% if (user) { %>
+          <% if (isMerchant) { %>
+            <!-- Merchant Logged In -->
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <b><%= user.ownerName %></b>
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-item" href="/merchant/logout">Sign-Out</a></li>
+                <li><a class="dropdown-item" href="/merchant/dashboard">Dashboard</a></li>
+                <li><a class="dropdown-item" href="#">Your Listed Products</a></li>
+                <li><a class="dropdown-item" href="#">Orders Received</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="#">Customer Support</a></li>
+                <li><a class="dropdown-item" href="#">Help & FAQs</a></li>
+                <li><a class="dropdown-item" href="#">Policies & Guidelines</a></li>
+              </ul>
+            </li>
+          <% } else { %>
+            <!-- Normal User Logged In -->
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <b><%= user.fullname %></b>
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-item" href="/user/logout">Sign-Out</a></li>
+                <li><a class="dropdown-item" href="#">Your Orders</a></li>
+                <li><a class="dropdown-item" href="#">Your Wishlist</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="#">Customer Support</a></li>
+                <li><a class="dropdown-item" href="#">Need Help?</a></li>
+                <li><a class="dropdown-item" href="#">Membership & Subscriptions</a></li>
+              </ul>
+            </li>
+          <% } %>
+        <% } else { %>
+          <!-- No User Logged In -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Your Account
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="/user/signin">User Sign-In</a></li>
+              <li><a class="dropdown-item" href="/user/signup">Create User Account</a></li>
+              <li><a class="dropdown-item" href="/merchant/merchant-signin">Merchant Sign-In</a></li>
+              <li><a class="dropdown-item" href="/merchant/merchant-signup">Become a Seller</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#">Customer Support</a></li>
+              <li><a class="dropdown-item" href="#">Need Help?</a></li>
+            </ul>
+          </li>
+        <% } %>
+
+        <!-- Shared Links -->
+        <li class="nav-item">
+          <a class="nav-link" href="#">Orders</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Wishlist</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<% if (locals.error) { %>
+  <div class="alert alert-danger" role="alert">
+    <%= locals.error %>
+  </div>
+<% } %>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("./partials/head") %>
+        <title>Add Product</title>
+        <style>
+            .step-section {
+                display: none;
+            }
+
+            .step-section.active {
+                display: block;
+            }
+
+            .image-preview {
+                margin-top: 10px;
+            }
+
+            .image-preview img {
+                max-width: 100px;
+                max-height: 100px;
+                margin-right: 10px;
+                object-fit: cover;
+            }
+        </style>
+</head>
+
+<body>
+    <%- include("./partials/merchantDashNav") %>
+
+        <div class="container mt-5 pt-5 d-flex justify-content-center">
+            <div class="w-100" style="max-width: 750px;">
+                <div class="card shadow-lg border border-2 border-secondary-subtle">
+                    <div class="card-body p-4 bg-light rounded">
+                        <h3 class="text-center mb-4">Add New Product</h3>
+
+                        <!-- Progress bar -->
+                        <div class="progress mb-4" style="height: 20px;">
+                            <div id="progressBar" class="progress-bar progress-bar-striped bg-success"
+                                role="progressbar" style="width: 33%;">
+                                Step 1 of 3
+                            </div>
+                        </div>
+
+                        <form id="addProductForm" action="/product/addProduct" method="POST"
+                            enctype="multipart/form-data">
+                            <!-- Step 1: Basic Info -->
+                            <div class="step-section active" id="step1">
+                                <h5 class="mb-3 text-primary">Step 1: Basic Information</h5>
+
+                                <div class="mb-3">
+                                    <label for="productName" class="form-label">
+                                        Product Name:
+                                        <i class="bi bi-info-circle text-muted" data-bs-toggle="tooltip"
+                                            title="Name of the product as seen by customers."></i>
+                                    </label>
+                                    <input type="text" name="productName" class="form-control" id="productName"
+                                        required>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="description" class="form-label">
+                                        Description:
+                                        <i class="bi bi-info-circle text-muted" data-bs-toggle="tooltip"
+                                            title="Brief details or features of the product."></i>
+                                    </label>
+                                    <textarea name="description" class="form-control" id="description" rows="3"
+                                        required></textarea>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="category" class="form-label">Category:</label>
+                                    <select name="category" class="form-select" id="category" required>
+                                        <option value="">-- Select Category --</option>
+                                        <option value="ELECTRONICS">Electronics</option>
+                                        <option value="CLOTHING">Clothing</option>
+                                        <option value="GROCERY">Grocery</option>
+                                        <option value="HOME_APPLIANCES">Home Appliances</option>
+                                        <option value="FURNITURE">Furniture</option>
+                                        <option value="TOYS">Toys</option>
+                                        <option value="BOOKS">Books</option>
+                                        <option value="STATIONERY">Stationery</option>
+                                        <option value="BEAUTY">Beauty</option>
+                                        <option value="HEALTH">Health</option>
+                                        <option value="SPORTS">Sports</option>
+                                        <option value="AUTOMOTIVE">Automotive</option>
+                                        <option value="FOOTWEAR">Footwear</option>
+                                        <option value="ACCESSORIES">Accessories</option>
+                                        <option value="JEWELRY">Jewelry</option>
+                                        <option value="BAGS">Bags</option>
+                                        <option value="PET_SUPPLIES">Pet Supplies</option>
+                                        <option value="TOOLS">Tools</option>
+                                        <option value="BABY_PRODUCTS">Baby Products</option>
+                                        <option value="GARDEN">Garden</option>
+                                        <option value="MUSIC">Music</option>
+                                        <option value="SOFTWARE">Software</option>
+                                        <option value="ART">Art</option>
+                                        <option value="HANDMADE">Handmade</option>
+                                        <option value="INDUSTRIAL">Industrial</option>
+                                        <option value="GIFT_ITEMS">Gift Items</option>
+                                        <option value="OTHERS">Others</option>
+                                    </select>
+                                </div>
+
+
+                                <div class="mb-3">
+                                    <label for="brand" class="form-label">Brand:</label>
+                                    <input type="text" name="brand" class="form-control" id="brand">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="price" class="form-label">Price:</label>
+                                    <input type="number" name="price" class="form-control" id="price" required>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="discountPrice" class="form-label">Discount Price:</label>
+                                    <input type="number" name="discountPrice" class="form-control" id="discountPrice"
+                                        required>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="stockQuantity" class="form-label">Stock Quantity:</label>
+                                    <input type="number" name="stockQuantity" class="form-control" id="stockQuantity"
+                                        required>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="SKU" class="form-label">SKU Code:</label>
+                                    <input type="text" name="SKU" class="form-control" id="SKU">
+                                </div>
+
+                                <div class="text-end">
+                                    <button type="button" class="btn btn-primary" onclick="nextStep(1)">Next</button>
+                                </div>
+                            </div>
+
+                            <!-- Step 2: Media -->
+                            <div class="step-section" id="step2">
+                                <h5 class="mb-3 text-primary">Step 2: Upload Media</h5>
+
+                                <div class="mb-3">
+                                    <label for="ProductImage" class="form-label">Main Product Image:</label>
+                                    <input type="file" name="ProductImage" class="form-control" id="ProductImage"
+                                        accept="image/*" required>
+                                    <div class="image-preview" id="mainImagePreview"></div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="addImages" class="form-label">Additional Images (Multiple):</label>
+                                    <input type="file" name="addImages" class="form-control" id="addImages"
+                                        accept="image/*" multiple>
+                                    <div class="image-preview d-flex flex-wrap" id="extraImagePreview"></div>
+                                </div>
+
+                                <div class="d-flex justify-content-between">
+                                    <button type="button" class="btn btn-secondary" onclick="prevStep(2)">Back</button>
+                                    <button type="button" class="btn btn-primary" onclick="nextStep(2)">Next</button>
+                                </div>
+                            </div>
+
+                            <!-- Step 3: Variants -->
+                            <div class="step-section" id="step3">
+                                <h5 class="mb-3 text-primary">Step 3: Variants & Tags</h5>
+
+                                <div class="mb-3">
+                                    <label for="AvailSizes" class="form-label">Available Sizes (comma
+                                        separated):</label>
+                                    <input type="text" name="AvailSizes" class="form-control" id="AvailSizes">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="colors" class="form-label">Colors (comma separated):</label>
+                                    <input type="text" name="colors" class="form-control" id="colors">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="Keywords" class="form-label">Tags/Keywords (comma separated):</label>
+                                    <input type="text" name="Keywords" class="form-control" id="Keywords">
+                                </div>
+
+                                <div class="d-flex justify-content-between">
+                                    <button type="button" class="btn btn-secondary" onclick="prevStep(3)">Back</button>
+                                    <button type="submit" class="btn btn-success">Submit Product</button>
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <%- include("./partials/script") %>
+            <%- include("./partials/nextSectionScript") %>
+
+
+</body>
+
+</html>

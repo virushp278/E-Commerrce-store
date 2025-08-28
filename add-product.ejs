@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include("./partials/head") %>
+  <title>Add Product</title>
+</head>
+<body>
+  <%- include("./partials/merchantDashNav") %>
+
+  <div class="container mt-5 pt-5">
+    <h2 class="mb-4">🛒 Add a New Product</h2>
+
+    <form action="/merchant/add-product" method="POST" enctype="multipart/form-data">
+      <!-- Product Name -->
+      <div class="mb-3">
+        <label for="name" class="form-label">Product Name *</label>
+        <input type="text" class="form-control" id="name" name="name" required>
+      </div>
+
+      <!-- Description -->
+      <div class="mb-3">
+        <label for="description" class="form-label">Description *</label>
+        <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+      </div>
+
+      <!-- Category -->
+      <div class="mb-3">
+        <label for="category" class="form-label">Category *</label>
+        <input type="text" class="form-control" id="category" name="category" required>
+      </div>
+
+      <!-- Price -->
+      <div class="mb-3">
+        <label for="price" class="form-label">Price (₹) *</label>
+        <input type="number" step="0.01" class="form-control" id="price" name="price" required>
+      </div>
+
+      <!-- Stock Quantity -->
+      <div class="mb-3">
+        <label for="stock" class="form-label">Stock Quantity *</label>
+        <input type="number" class="form-control" id="stock" name="stock" required>
+      </div>
+
+      <!-- Brand -->
+      <div class="mb-3">
+        <label for="brand" class="form-label">Brand</label>
+        <input type="text" class="form-control" id="brand" name="brand">
+      </div>
+
+      <!-- Material / Fabric -->
+      <div class="mb-3">
+        <label for="material" class="form-label">Material / Fabric Type</label>
+        <input type="text" class="form-control" id="material" name="material">
+      </div>
+
+      <!-- Color Options -->
+      <div class="mb-3">
+        <label for="colors" class="form-label">Color Options (comma separated)</label>
+        <input type="text" class="form-control" id="colors" name="colors">
+      </div>
+
+      <!-- Size Options -->
+      <div class="mb-3">
+        <label for="sizes" class="form-label">Size Options (comma separated)</label>
+        <input type="text" class="form-control" id="sizes" name="sizes">
+      </div>
+
+      <!-- Product Image -->
+      <div class="mb-3">
+        <label for="image" class="form-label">Product Image *</label>
+        <input class="form-control" type="file" id="image" name="image" accept="image/*" required>
+      </div>
+
+      <!-- Discount -->
+      <div class="mb-3">
+        <label for="discount" class="form-label">Discount (%)</label>
+        <input type="number" class="form-control" id="discount" name="discount">
+      </div>
+
+      <!-- Tags / Keywords -->
+      <div class="mb-3">
+        <label for="tags" class="form-label">Tags / Keywords (comma separated)</label>
+        <input type="text" class="form-control" id="tags" name="tags">
+      </div>
+
+      <!-- Return Policy -->
+      <div class="form-check mb-3">
+        <input class="form-check-input" type="checkbox" id="returnAvailable" name="returnAvailable">
+        <label class="form-check-label" for="returnAvailable">
+          Return Policy Available
+        </label>
+      </div>
+
+      <!-- Shipping Time -->
+      <div class="mb-3">
+        <label for="shippingTime" class="form-label">Shipping Time / Availability</label>
+        <input type="text" class="form-control" id="shippingTime" name="shippingTime">
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" class="btn btn-primary">Add Product</button>
+    </form>
+  </div>
+
+  <%- include("./partials/script") %>
+</body>
+</html>
