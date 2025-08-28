@@ -14,7 +14,9 @@ const router = require("./routes/user");
 const merchantRouter = require("./routes/merchant");
 const productRouter = require("./routes/product");
 const homeRoutes = require('./routes/home');
+
 const orderRouter = require("./routes/order");
+const cartRoutes = require('./routes/cart');
 const { attachUser } = require("./services/attachUser");
 
 
@@ -24,7 +26,7 @@ const app = express();
 const PORT = 8000;
 
 const Product = require("./models/Product"); // adjust path if needed
-
+require('events').EventEmitter.defaultMaxListeners = 20;
 mongoose.connect("mongodb://localhost:27017/ecommerce").then((e) => console.log("MongoDB Connected"));
 
 app.set("view engine", "ejs");
@@ -41,7 +43,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(checkForAuthenticationCookie("token"));
 app.use(express.static(path.resolve('./public')))
-app.use(express.static(path.resolve('./views/partials')))
+// app.use(express.static(path.resolve('./views/partials')))
 app.use('/uploads', express.static(path.resolve('./public/uploads/products/')));
 app.use(attachUser);
 
@@ -63,10 +65,16 @@ app.get("/", async (req, res) => {
         }
 
         else {
+            // res.render("home", {
+            //     user: res.locals.user || res.locals.merchant,
+            //     isMerchant: res.locals.isMerchant,
+            //     products,
+            // });
             res.render("home", {
-                user: res.locals.user || res.locals.merchant,
+                user: res.locals.user,
                 isMerchant: res.locals.isMerchant,
                 products,
+                message: products.length ? null : "No products available right now."
             });
         }
 
@@ -79,7 +87,10 @@ app.get("/", async (req, res) => {
 app.use("/user", router);
 app.use("/merchant", merchantRouter);
 app.use("/product", productRouter);
-app.use("/order",orderRouter);
+app.use("/order", orderRouter);
+
+
+app.use("/cart", cartRoutes);
 app.use('/', homeRoutes);
 
 app.listen(PORT, () => console.log(`port started at ${PORT}`));

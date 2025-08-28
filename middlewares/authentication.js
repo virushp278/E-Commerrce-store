@@ -1,11 +1,15 @@
 const { validateToken } = require("../services/authentication");
 const Merchant = require("../models/merchant");
-const User = require("../models/user"); // if you have a separate user model
+const User = require("../models/user");
 
 function checkForAuthenticationCookie(cookieName) {
   return async (req, res, next) => {
+    // console.log("🔵 Middleware triggered");
     const token = req.cookies[cookieName];
+    // console.log("🔑 Token from cookie:", token);
+
     if (!token) {
+      console.log("⚠️ No token found");
       res.locals.user = null;
       res.locals.merchant = null;
       res.locals.isMerchant = false;
@@ -14,16 +18,21 @@ function checkForAuthenticationCookie(cookieName) {
 
     try {
       const decoded = validateToken(token); // { _id, role, ... }
+      // console.log("✅ Decoded Token:", decoded);
 
       if (decoded.role === "MERCHANT") {
+        // console.log("👨‍💼 Role: MERCHANT, fetching merchant...");
         const merchant = await Merchant.findById(decoded._id);
+        // console.log("📦 Merchant found:", merchant);
         if (!merchant) throw new Error("Merchant not found");
         req.merchant = merchant;
         res.locals.merchant = merchant;
         res.locals.user = null;
         res.locals.isMerchant = true;
       } else {
+        // console.log("🧑 Role: USER, fetching user...");
         const user = await User.findById(decoded._id);
+        // console.log("📦 User found:", user);
         if (!user) throw new Error("User not found");
         req.user = user;
         res.locals.user = user;
@@ -31,8 +40,8 @@ function checkForAuthenticationCookie(cookieName) {
         res.locals.isMerchant = false;
       }
     } catch (err) {
-      console.error("Token Validation Error:", err.message);
-      res.clearCookie("token"); // 🧹 clear corrupted token
+      console.error("❌ Token Validation Error:", err.message);
+      res.clearCookie("token");
       req.user = null;
       req.merchant = null;
       res.locals.user = null;
@@ -40,6 +49,7 @@ function checkForAuthenticationCookie(cookieName) {
       res.locals.isMerchant = false;
     }
 
+    // console.log("➡️ Passing to next middleware/route");
     return next();
   };
 }

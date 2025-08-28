@@ -1,0 +1,95 @@
+<style>
+    /* General Body and Font Styling */
+    body {
+        background-color: #f8f9fa; /* A light grey background for better contrast */
+    }
+
+    .container h2 {
+        font-weight: 600;
+        color: #333;
+    }
+
+    /* Table Styling */
+    .table {
+        border: none; /* Remove the outer border for a cleaner look */
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        border-radius: 12px;
+        overflow: hidden; /* Ensures the border-radius is applied to table corners */
+    }
+
+    .table thead {
+        background-color: #0d6efd; /* A strong primary color for the header */
+        color: white;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .table tbody tr {
+        transition: background-color 0.2s ease-in-out;
+    }
+
+    .table tbody tr:hover {
+        background-color: #e9ecef; /* Subtle hover effect for rows */
+    }
+    
+    .table td, .table th {
+        vertical-align: middle; /* Ensures all content is vertically centered */
+        border-color: #dee2e6;
+    }
+
+    /* Product Info in Table */
+    .product-info-cell {
+        display: flex;
+        align-items: center;
+    }
+
+    .product-info-cell img {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-right: 15px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    /* Quantity Input Styling */
+    .quantity-form {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .quantity-input {
+        max-width: 70px;
+        text-align: center;
+        margin-right: 10px;
+    }
+
+    /* Cart Summary Card */
+    .cart-summary-card {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        background-color: #ffffff;
+    }
+
+    .cart-summary-card .btn-success {
+        font-weight: 600;
+        padding: 12px;
+        transition: background-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .cart-summary-card .btn-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3);
+    }
+
+    /* Empty Cart Styling */
+    .empty-cart-container {
+        text-align: center;
+        padding: 60px 20px;
+        background-color: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    }
+</style>

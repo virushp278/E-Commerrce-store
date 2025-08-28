@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("./partials/head") %>
+        <title>Your Cart</title>
+
+        <style>
+            body {
+                background-color: #f8f9fa;
+            }
+
+            .container h2 {
+                font-weight: 600;
+                color: #333;
+            }
+
+            /* Cart Item Card */
+            .cart-item {
+                background-color: #fff;
+                border-radius: 10px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+                padding: 15px;
+                margin-bottom: 15px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                flex-wrap: wrap;
+            }
+
+            .cart-item-left {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                flex: 1 1 250px;
+            }
+
+            .cart-item-left img {
+                width: 70px;
+                height: 70px;
+                object-fit: cover;
+                border-radius: 8px;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            }
+
+            .cart-item-right {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                flex-wrap: wrap;
+            }
+
+            .quantity-controls {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
+
+            .quantity-controls input {
+                width: 50px;
+                text-align: center;
+                padding: 2px 5px;
+                border-radius: 5px;
+                border: 1px solid #ced4da;
+            }
+
+            .quantity-controls button {
+                min-width: 30px;
+                height: 30px;
+                padding: 0;
+                font-weight: bold;
+            }
+
+            .cart-summary {
+                max-width: 400px;
+                width: 100%;
+                background-color: #fff;
+                border-radius: 12px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+                padding: 20px;
+            }
+
+            .cart-summary h5 {
+                font-weight: 600;
+            }
+
+            .btn-update {
+                height: 34px;
+            }
+
+            .btn-remove {
+                height: 34px;
+            }
+
+            .btn-continue-shopping {
+                margin-bottom: 15px;
+            }
+
+            @media (max-width: 576px) {
+                .cart-item {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+
+                .cart-item-right {
+                    width: 100%;
+                    justify-content: flex-start;
+                    gap: 10px;
+                    margin-top: 10px;
+                }
+            }
+        </style>
+</head>
+
+<body>
+    <%- include("./partials/nav") %>
+
+        <div class="container mt-5 pt-5">
+            <h2 class="mb-4">🛒 Your Cart</h2>
+
+            <% if (cartItems && cartItems.length> 0) { %>
+                <% cartItems.forEach(item=> {
+                    let subtotal = item.price * item.quantity;
+                    %>
+                    <div class="cart-item">
+                        <div class="cart-item-left">
+                            <img src="<%= item.image %>" alt="<%= item.name %>">
+                            <div>
+                                <h6>
+                                    <%= item.name %>
+                                </h6>
+                                <p class="mb-0 text-success">₹<%= item.price %>
+                                </p>
+                                <p class="mb-0 text-muted">Subtotal: ₹<%= subtotal %>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="cart-item-right">
+                            <form action="/cart/update/<%= item.productId %>" method="POST" class="quantity-controls">
+                                <button type="button" class="btn btn-outline-secondary btn-sm"
+                                    onclick="decrement(this)">-</button>
+                                <input type="number" name="quantity" value="<%= item.quantity %>" min="1">
+                                <button type="button" class="btn btn-outline-secondary btn-sm"
+                                    onclick="increment(this)">+</button>
+                                <button type="submit" class="btn btn-outline-primary btn-sm btn-update">Update</button>
+                            </form>
+
+                            <form action="/cart/remove/<%= item.productId %>" method="POST">
+                                <button type="submit" class="btn btn-outline-danger btn-sm btn-remove">Remove</button>
+                            </form>
+                        </div>
+                    </div>
+                    <% }) %>
+
+                        <!-- Continue Shopping Button -->
+                        <div class="d-flex justify-content-start">
+                            <a href="/" class="btn btn-outline-primary btn-continue-shopping">➕ Continue Shopping</a>
+                        </div>
+
+                        <div class="d-flex justify-content-end mt-2">
+                            <div class="cart-summary">
+                                <h5>Cart Summary</h5>
+                                <% let total=cartItems.reduce((acc, item)=> acc + item.price*item.quantity, 0); %>
+                                    <p class="d-flex justify-content-between">
+                                        <span>Total:</span> <strong>₹<%= total %></strong>
+                                    </p>
+                                    <form action="/checkout" method="POST">
+                                        <div class="d-flex justify-content-end mt-4">
+                                            <a href="/order/checkout" class="btn btn-success btn-lg">Proceed to
+                                                Checkout</a>
+                                        </div>
+
+                                    </form>
+                            </div>
+                        </div>
+                        <% } else { %>
+                            <div class="alert alert-info">Your cart is empty.</div>
+                            <a href="/" class="btn btn-primary">Continue Shopping</a>
+                            <% } %>
+        </div>
+
+        <%- include("./partials/script") %>
+
+            <script>
+                function increment(btn) {
+                    const input = btn.previousElementSibling;
+                    input.value = parseInt(input.value) + 1;
+                }
+
+                function decrement(btn) {
+                    const input = btn.nextElementSibling;
+                    if (parseInt(input.value) > 1) input.value = parseInt(input.value) - 1;
+                }
+            </script>
+</body>
+
+</html>
