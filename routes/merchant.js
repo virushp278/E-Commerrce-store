@@ -132,6 +132,7 @@ router.post("/merchant-signin", async (req, res) => {
             // secure: false, // true in production
             // maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week
         }).redirect('/merchant/dashboard');
+        console.log("Session after login:", req.session);
 
 
 
@@ -144,12 +145,14 @@ router.post("/merchant-signin", async (req, res) => {
 });
 
 router.get("/logout", (req, res) => {
-    req.session.destroy(() => {
+    req.session.destroy(err => {
+        if (err) console.error("Session Destroy Error:", err);
         res.clearCookie("token").redirect("/");
     });
+});
 
 
-})
+
 
 router.get("/product/addProduct", (req, res) => {
     res.render("addProduct");

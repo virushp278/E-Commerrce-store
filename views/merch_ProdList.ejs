@@ -31,10 +31,14 @@
                                 </div>
 
                                 <p class="mb-1">
-                                    <strong class="text-success">₹<%= product.price %></strong>
-                                    <% if (product.originalPrice && product.originalPrice > product.price) { %>
-                                        <span class="text-muted text-decoration-line-through ms-2">₹<%= product.originalPrice %></span>
-                                    <% } %>
+                                    <% if (product.price > product.discountPrice) { %>
+                                    <strong class="text-success">Buy at₹<%= product.discountPrice %></strong>
+                                    <span class="text-muted text-decoration-line-through ms-2">₹<%= product.price %></span>
+                                    
+                                    <% } else { %>
+                                     
+                                    <strong class="text-success">Buy at₹<%= product.price %></strong>
+                                        <% } %>
                                 </p>
 
                                 <p class="text-muted small mb-1">🛒 Orders: <%= product.orders || 0 %></p>
@@ -43,8 +47,8 @@
 
                                 <div class="mt-auto d-flex gap-2">
                                     <a href="/product/<%= product._id %>" class="btn btn-outline-primary btn-sm w-100">View</a>
-                                    <a href="/merchant/product/<%= product._id %>/edit" class="btn btn-outline-warning btn-sm w-100">Edit</a>
-                                    <form action="/merchant/product/<%= product._id %>?_method=DELETE" method="POST" onsubmit="return confirm('Delete this product?')" class="w-100">
+                                    <a href="/product/<%= product._id %>/edit" class="btn btn-outline-warning btn-sm w-100">Edit</a>
+                                    <form action="/product/<%= product._id %>/delete" method="POST" onsubmit="return confirm('Delete this product?')" class="w-100">
                                         <button type="submit" class="btn btn-outline-danger btn-sm w-100">Delete</button>
                                     </form>
                                 </div>

@@ -1,0 +1,43 @@
+<%- include('./partials/head') %>
+<%- include('./partials/nav') %>
+
+<div class="container my-5">
+    <h2 class="mb-4">Add New Shipping Address</h2>
+
+    <form action="/user/address/add" method="POST">
+        <div class="mb-3">
+            <label class="form-label">Street</label>
+            <input type="text" class="form-control" name="street" placeholder="Street" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Landmark (optional)</label>
+            <input type="text" class="form-control" name="landmark" placeholder="Landmark">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">City</label>
+            <input type="text" class="form-control" name="city" placeholder="City" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">State</label>
+            <input type="text" class="form-control" name="state" placeholder="State" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">ZIP Code</label>
+            <input type="text" class="form-control" name="zipCode" placeholder="ZIP Code" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Country</label>
+            <input type="text" class="form-control" name="country" placeholder="Country" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-3">Save Address & Continue</button>
+        <a href="/orders/checkout" class="btn btn-secondary mt-3 ms-2">Cancel</a>
+    </form>
+</div>
+
+<%- include('./partials/script') %>

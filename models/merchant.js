@@ -76,7 +76,7 @@ merchantSchema.pre('save', function (next) {
 
   if (!merchantUser.isModified("password")) return next();
 
-  const salt = randomBytes(16).toString();
+  const salt = randomBytes(16).toString("hex");
   const hashedPassword = createHmac('sha256', salt).update(merchantUser.password).digest("hex");
   const hashedPanNumber = createHmac('sha256', salt).update(merchantUser.panNumber).digest("hex");
 

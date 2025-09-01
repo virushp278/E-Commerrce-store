@@ -7,18 +7,24 @@ router.get('/', (req, res) => {
 
   if (merchant) {
     return res.render('home', {
-      user: merchant,
+      merchant,
+      user: null,
       isMerchant: true,
+      isUser: false
     });
   } else if (user) {
     return res.render('home', {
       user,
+      merchant: null,
       isMerchant: false,
+      isUser: true
     });
   } else {
     return res.render('home', {
       user: null,
+      merchant: null,
       isMerchant: false,
+      isUser: false
     });
   }
 });

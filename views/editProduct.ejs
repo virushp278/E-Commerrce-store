@@ -1,0 +1,115 @@
+<%- include("./partials/head") %>
+    <title>Edit Product - <%= product.productName %>
+    </title>
+    <%- include("./partials/merchantDashNav") %>
+
+        <div class="container mt-5 pt-5">
+            <h2>Edit Product</h2>
+            <form action="/product/<%= product._id %>/edit" method="POST" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label class="form-label">Product Name</label>
+                    <input type="text" class="form-control" name="productName" value="<%= product.productName %>"
+                        required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-control" name="description" rows="3"
+                        required><%= product.description %></textarea>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Category</label>
+                    <select class="form-control" name="category" required>
+                        <option value="">Select Category</option>
+                        <option value="ELECTRONICS" <%=product.category==="ELECTRONICS" ? "selected" : "" %>>Electronics
+                        </option>
+                        <option value="CLOTHING" <%=product.category==="CLOTHING" ? "selected" : "" %>>Clothing</option>
+                        <option value="GROCERY" <%=product.category==="GROCERY" ? "selected" : "" %>>Grocery</option>
+                        <option value="HOME_APPLIANCES" <%=product.category==="HOME_APPLIANCES" ? "selected" : "" %>
+                            >Home Appliances</option>
+                        <option value="FURNITURE" <%=product.category==="FURNITURE" ? "selected" : "" %>>Furniture
+                        </option>
+                        <option value="TOYS" <%=product.category==="TOYS" ? "selected" : "" %>>Toys</option>
+                        <option value="BOOKS" <%=product.category==="BOOKS" ? "selected" : "" %>>Books</option>
+                        <option value="STATIONERY" <%=product.category==="STATIONERY" ? "selected" : "" %>>Stationery
+                        </option>
+                        <option value="BEAUTY" <%=product.category==="BEAUTY" ? "selected" : "" %>>Beauty</option>
+                        <option value="HEALTH" <%=product.category==="HEALTH" ? "selected" : "" %>>Health</option>
+                        <option value="SPORTS" <%=product.category==="SPORTS" ? "selected" : "" %>>Sports</option>
+                        <option value="AUTOMOTIVE" <%=product.category==="AUTOMOTIVE" ? "selected" : "" %>>Automotive
+                        </option>
+                        <option value="FOOTWEAR" <%=product.category==="FOOTWEAR" ? "selected" : "" %>>Footwear</option>
+                        <option value="ACCESSORIES" <%=product.category==="ACCESSORIES" ? "selected" : "" %>>Accessories
+                        </option>
+                        <option value="JEWELRY" <%=product.category==="JEWELRY" ? "selected" : "" %>>Jewelry</option>
+                        <option value="BAGS" <%=product.category==="BAGS" ? "selected" : "" %>>Bags</option>
+                        <option value="PET_SUPPLIES" <%=product.category==="PET_SUPPLIES" ? "selected" : "" %>>Pet
+                            Supplies</option>
+                        <option value="TOOLS" <%=product.category==="TOOLS" ? "selected" : "" %>>Tools</option>
+                        <option value="BABY_PRODUCTS" <%=product.category==="BABY_PRODUCTS" ? "selected" : "" %>>Baby
+                            Products</option>
+                        <option value="GARDEN" <%=product.category==="GARDEN" ? "selected" : "" %>>Garden</option>
+                        <option value="MUSIC" <%=product.category==="MUSIC" ? "selected" : "" %>>Music</option>
+                        <option value="SOFTWARE" <%=product.category==="SOFTWARE" ? "selected" : "" %>>Software</option>
+                        <option value="ART" <%=product.category==="ART" ? "selected" : "" %>>Art</option>
+                        <option value="HANDMADE" <%=product.category==="HANDMADE" ? "selected" : "" %>>Handmade</option>
+                        <option value="INDUSTRIAL" <%=product.category==="INDUSTRIAL" ? "selected" : "" %>>Industrial
+                        </option>
+                        <option value="GIFT_ITEMS" <%=product.category==="GIFT_ITEMS" ? "selected" : "" %>>Gift Items
+                        </option>
+                        <option value="OTHERS" <%=product.category==="OTHERS" ? "selected" : "" %>>Others</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Price</label>
+                    <input type="number" class="form-control" name="price" value="<%= product.price %>" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Discount Price</label>
+                    <input type="number" class="form-control" name="discountPrice" value="<%= product.discountPrice %>">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Stock Quantity</label>
+                    <input type="number" class="form-control" name="stockQuantity" value="<%= product.stockQuantity %>"
+                        required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">SKU</label>
+                    <input type="text" class="form-control" name="SKU" value="<%= product.SKU %>">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Available Sizes (comma separated)</label>
+                    <input type="text" class="form-control" name="AvailSizes"
+                        value="<%= product.AvailSizes.join(',') %>">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Colors (comma separated)</label>
+                    <input type="text" class="form-control" name="colors" value="<%= product.colors.join(',') %>">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Keywords (comma separated)</label>
+                    <input type="text" class="form-control" name="Keywords" value="<%= product.Keywords.join(',') %>">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Product Image</label>
+                    <input type="file" class="form-control" name="ProductImage">
+                    <% if (product.ProductImage) { %>
+                        <img src="<%= product.ProductImage %>" alt="Product Image" class="img-fluid mt-2"
+                            style="max-width:150px;">
+                        <% } %>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Additional Images</label>
+                    <input type="file" class="form-control" name="addImages" multiple>
+                    <% if (product.addImages.length> 0) { %>
+                        <% product.addImages.forEach(img=> { %>
+                            <img src="<%= img %>" alt="Additional Image" class="img-fluid mt-2 me-2"
+                                style="max-width:100px;">
+                            <% }) %>
+                                <% } %>
+                </div>
+                <button class="btn btn-primary">Update Product</button>
+            </form>
+        </div>
+
+        <%- include("./partials/script") %>

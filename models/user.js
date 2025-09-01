@@ -49,8 +49,20 @@ const userSchema = new Schema({
                 default: 1
             }
         }
-    ]
+    ],
+
     // END: Added Cart Functionality
+    // New: Addresses
+    addresses: [
+        {
+            street: { type: String, required: true },
+            landmark: { type: String }, // optional
+            city: { type: String, required: true },
+            state: { type: String, required: true },
+            zipCode: { type: String, required: true },
+            country: { type: String, required: true }
+        }
+    ]
 },{timestamps:true,});
 
 userSchema.pre('save', function (next){
@@ -76,7 +88,7 @@ userSchema.static('matchPasswordAndGenerateToken',async function(email,password)
     if(hashedPassword!==userProvidedHash) throw new Error("Incorrect Password, Please try again");
 
     const token = createTokenForUser(user);
-    return token;
+    return {user,token};
 });
 
 const User = model("user",userSchema);

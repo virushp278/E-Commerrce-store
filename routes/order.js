@@ -4,14 +4,12 @@ const Order = require("../models/order");
 const Product = require("../models/Product");
 const User = require("../models/user");
 const { requireUser } = require("../services/authentication");
-const { localsName } = require("ejs");
 
-// Place a new order
+// ------------------ Place a new order ------------------
 router.post("/buy", requireUser, async (req, res) => {
     try {
         let { productId, quantity, shippingAddress } = req.body;
 
-        // If multiple items (from cart), they will come as arrays
         if (!Array.isArray(productId)) {
             productId = [productId];
             quantity = [quantity];
@@ -19,7 +17,7 @@ router.post("/buy", requireUser, async (req, res) => {
 
         for (let i = 0; i < productId.length; i++) {
             const product = await Product.findById(productId[i]);
-            if (!product) continue; // skip missing products
+            if (!product) continue;
 
             const totalAmount = product.price * quantity[i];
 
@@ -28,13 +26,12 @@ router.post("/buy", requireUser, async (req, res) => {
                 buyer: req.user._id,
                 quantity: quantity[i],
                 totalAmount,
-                shippingAddress: [shippingAddress], // same address for all items
+                shippingAddress: [shippingAddress],
             });
 
             await newOrder.save();
         }
 
-        // Clear user's cart after checkout
         await User.findByIdAndUpdate(req.user._id, { $set: { cart: [] } });
 
         res.redirect("/orders"); // Redirect to order history page
@@ -44,72 +41,84 @@ router.post("/buy", requireUser, async (req, res) => {
     }
 });
 
-
-// routes/order.js
-
-// Checkout page (GET)
+// ------------------ Checkout page ------------------
 router.get("/checkout", requireUser, async (req, res) => {
     try {
+        const { productId } = req.query; // check if single product
+
         const user = await User.findById(req.user._id).populate("cart.product");
 
-        if (!user.cart || user.cart.length === 0) {
-            return res.redirect("/cart");
+        let itemsToBuy = [];
+
+        if (productId) {
+            const product = await Product.findById(productId);
+            if (!product) return res.status(404).send("Product not found");
+
+            itemsToBuy = [{
+                _id: product._id,
+                productName: product.productName,
+                price: product.price,
+                quantity: 1,
+                image: product.ProductImage
+            }];
+        } else {
+            // Cart checkout
+            if (!user.cart || user.cart.length === 0) {
+                return res.redirect("/cart");
+            }
+
+            itemsToBuy = user.cart
+                .filter(item => item.product)
+                .map(item => ({
+                    _id: item.product._id,
+                    productName: item.product.productName,
+                    price: item.product.price,
+                    quantity: item.quantity,
+                    image: item.product.ProductImage
+                }));
         }
 
-        const cartItems = user.cart.map(item => ({
-            productId: item.product._id,
-            name: item.product.productName,
-            price: item.product.price,
-            image: item.product.ProductImage,
-            quantity: item.quantity
-        }));
-
-        res.render("buy", {
-            cartItems,
-            user
-        });
+        res.render("buy", { cartItems: itemsToBuy, user });
     } catch (err) {
         console.error("Error during checkout:", err);
         res.status(500).send("Server error during checkout");
     }
 });
 
-module.exports = router;
 
-// View user orders
-router.get("/", requireUser, async (req, res) => {
+// ------------------ View all user orders ------------------
+router.get("/your-orders", requireUser, async (req, res) => {
     try {
         const orders = await Order.find({ buyer: req.user._id })
             .populate("product")
             .sort({ placedAt: -1 });
 
-        res.render("user-order", {
+        res.render("user-orders", {
             orders,
-            user: req.user,
+            user: req.user
         });
     } catch (err) {
-        console.error(err);
+        console.error("Error fetching user orders:", err);
         res.status(500).send("Error fetching your orders.");
     }
 });
 
+// ------------------for Buying a single product ------------------
 router.get("/buy/:productId", requireUser, async (req, res) => {
-    const { productId } = req.params;
-    const product = await Product.findById(productId);
+    try {
+        const { productId } = req.params;
 
-    if (!product) {
-        return res.status(404).send("Product not found");
+        const product = await Product.findById(productId);
+        if (!product) return res.status(404).send("Product not found");
+
+        const user = await User.findById(req.user._id);
+
+        // Redirect to checkout page with query param
+        return res.redirect(`/order/checkout?productId=${productId}`);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Server error.");
     }
-
-    const user = await User.findById(req.user._id); // If you want to get existing addresses
-
-    res.render("buy", {
-        product,
-        user, // pass this if you're using user info
-    });
 });
-
-
-
 
 module.exports = router;

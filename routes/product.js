@@ -103,23 +103,25 @@ prouter.get("user/signin", async (req, res) => {
 })
 
 // routes/product.js (prouter)
-prouter.get("/:id", async (req, res) => {
+prouter.get("/:id", attachUser, async (req, res) => {
     try {
         const product = await Product.findById(req.params.id).populate("createdBy");
 
-        if (!product) {
-            return res.status(404).send("Product not found");
-        }
+        if (!product) return res.status(404).send("Product not found");
 
         const comments = await Comment.find({ productId: product._id }).populate("createdBy");
 
         let viewMode = "guest"; // default
 
-        if (req.user) {
-            if (req.user.role === "USER") {
+        // Use the user or merchant from locals
+        const currentUser = req.user || res.locals.merchant;
+
+        if (currentUser) {
+            if (currentUser.role === "USER") {
                 viewMode = "user";
-            } else if (req.user.role === "MERCHANT") {
-                if (product.createdBy._id.equals(req.user._id)) {
+            } else if (currentUser.role === "MERCHANT") {
+                // Convert both to string to avoid ObjectId mismatch
+                if (product.createdBy._id.toString() === currentUser._id.toString()) {
                     viewMode = "merchant-owner";
                 } else {
                     viewMode = "merchant-other";
@@ -131,15 +133,15 @@ prouter.get("/:id", async (req, res) => {
             product,
             comments,
             viewMode,
-            user: res.locals.user || res.locals.merchant,
-            isMerchant: res.locals.isMerchant,// may be merchant or user
+            user: currentUser,
+            isMerchant: currentUser?.role === "MERCHANT",
         });
-
     } catch (err) {
         console.error("Error fetching product:", err);
         return res.status(500).send("Server error");
     }
 });
+
 //router for comments
 
 prouter.post("/:productId/comments", requireUser, async (req, res) => {
@@ -176,23 +178,119 @@ prouter.post("/:productId/comments/:commentId/reply", requireMerchant, async (re
   }
 });
 
+/* ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
 
 
-// //for MERCHANTS
-// // Create new product
-// router.post("/add", requireMerchant, async (req, res) => {
-//     // create product
-// });
 
 // // Edit existing product
-// router.post("/edit/:id", requireMerchant, async (req, res) => {
-//     // update product
-// });
+// GET edit product page
+prouter.get("/:id/edit", requireMerchant, async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+    if (!product) return res.status(404).send("Product not found");
+
+    // Check if the logged-in merchant is the owner
+    if (!product.createdBy.equals(req.user._id)) {
+      return res.status(403).send("Unauthorized");
+    }
+
+    res.render("editProduct", { product });
+  } catch (err) {
+    console.error("Error fetching product for edit:", err);
+    res.status(500).send("Server error");
+  }
+});
+
+// POST update product details
+prouter.post("/:id/edit", requireMerchant, upload.fields([
+    { name: "ProductImage", maxCount: 1 },
+    { name: "addImages", maxCount: 5 }
+]), async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+    if (!product) return res.status(404).send("Product not found");
+
+    if (!product.createdBy.equals(req.user._id)) {
+      return res.status(403).send("Unauthorized");
+    }
+
+    const {
+      productName, description, category, brand,
+      price, discountPrice, stockQuantity, SKU,
+      AvailSizes, colors, Keywords
+    } = req.body;
+
+    // Update product fields
+    product.productName = productName;
+    product.description = description;
+    product.category = category;
+    product.brand = brand;
+    product.price = price;
+    product.discountPrice = discountPrice;
+    product.stockQuantity = stockQuantity;
+    product.SKU = SKU;
+    product.AvailSizes = AvailSizes.split(",").map(i => i.trim());
+    product.colors = colors.split(",").map(i => i.trim());
+    product.Keywords = Keywords.split(",").map(i => i.trim());
+
+    // Update images if new ones uploaded
+    if (req.files["ProductImage"]?.[0]) {
+      product.ProductImage = req.files["ProductImage"][0].path.replace(/\\/g, "/").replace(/.*public/, "");
+    }
+    if (req.files["addImages"]?.length) {
+      product.addImages = req.files["addImages"].map(file =>
+        file.path.replace(/\\/g, "/").replace(/.*public/, "")
+      );
+    }
+
+    await product.save();
+    res.redirect(`/product/${product._id}`);
+  } catch (err) {
+    console.error("Error updating product:", err);
+    res.status(500).send("Server error");
+  }
+});
+
+/* ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
 
 // // Delete product
-// router.post("/delete/:id", requireMerchant, async (req, res) => {
-//     // delete logic
-// });
+prouter.post("/:id/delete", requireMerchant, async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+
+    if (!product) {
+      return res.status(404).send("Product not found");
+    }
+
+    // Delete main product image
+    if (product.ProductImage) {
+      const productImagePath = path.join(__dirname, "..", "public", product.ProductImage);
+      if (fs.existsSync(productImagePath)) {
+        fs.unlinkSync(productImagePath);
+      }
+    }
+
+    // Delete additional images
+    if (product.addImages && product.addImages.length > 0) {
+      product.addImages.forEach(img => {
+        const imgPath = path.join(__dirname, "..", "public", img);
+        if (fs.existsSync(imgPath)) {
+          fs.unlinkSync(imgPath);
+        }
+      });
+    }
+
+    // Remove the product from DB
+    await Product.findByIdAndDelete(req.params.id);
+
+    res.redirect("/merchant/my-products"); // or wherever you want to redirect
+  } catch (err) {
+    console.error("Error deleting product:", err);
+    res.status(500).send("Error deleting product");
+  }
+});
+
+
 
 // // View all products by this merchant
 // router.get("/my-products", requireMerchant, async (req, res) => {

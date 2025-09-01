@@ -5,18 +5,24 @@ const User = require("../models/user");
 const Product = require("../models/Product");
 
 // Show user's cart
+// Show user's cart
 router.get("/", requireUser, async (req, res) => {
     try {
-        // Fetch full user document from DB to access cart
         const user = await User.findById(req.user._id).populate("cart.product");
 
-        const cartItems = user.cart.map(item => ({
-            productId: item.product._id,
-            name: item.product.productName,
-            price: item.product.price,
-            image: item.product.ProductImage,
-            quantity: item.quantity
-        }));
+        if (!user) {
+            return res.redirect("/login"); // safety check
+        }
+
+        const cartItems = user.cart
+            .filter(item => item.product) // skip null products
+            .map(item => ({
+                productId: item.product._id,
+                name: item.product.productName,
+                price: item.product.price,
+                image: item.product.ProductImage,
+                quantity: item.quantity
+            }));
 
         res.render("cart", { cartItems });
     } catch (err) {
