@@ -13,10 +13,21 @@
 
     <!-- Collapsible content -->
     <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
-      <form class="d-flex mx-auto" style="width: 60%;" role="search">
-        <input type="text" class="form-control me-2" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-primary" type="button">Search</button>
+
+      <!-- search area -->
+
+
+      <form class="d-flex mx-auto position-relative" style="width: 60%;" role="search" action="/product/search"
+        method="GET" autocomplete="off">
+        <input type="text" class="form-control me-2" id="searchInput" placeholder="Search Products..." name="q"
+          aria-label="Search">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+
+        <!-- Suggestions Dropdown -->
+        <div id="suggestionsBox" class="list-group position-absolute w-100" style="top: 100%; left: 0; z-index: 1000;">
+        </div>
       </form>
+
 
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
 
@@ -98,3 +109,43 @@
     <%= locals.error %>
   </div>
   <% } %>
+
+
+
+
+  <script>
+  const searchInput = document.getElementById('searchInput');
+  const suggestionsBox = document.getElementById('suggestionsBox');
+
+  searchInput.addEventListener('input', async () => {
+    const query = searchInput.value.trim();
+    if (query.length < 1) {
+      suggestionsBox.innerHTML = '';
+      return;
+    }
+
+    try {
+      const res = await fetch(`/product/autocomplete?q=${encodeURIComponent(query)}`);
+      const suggestions = await res.json();
+
+      if (suggestions.length === 0) {
+        suggestionsBox.innerHTML = '';
+        return;
+      }
+
+      suggestionsBox.innerHTML = suggestions.map(item =>
+        `<a href="/product/search?q=${encodeURIComponent(item)}" class="list-group-item list-group-item-action">${item}</a>`
+      ).join('');
+    } catch (err) {
+      console.error('Autocomplete fetch error:', err);
+      suggestionsBox.innerHTML = '';
+    }
+  });
+
+  // Hide suggestions when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('form')) {
+      suggestionsBox.innerHTML = '';
+    }
+  });
+</script>

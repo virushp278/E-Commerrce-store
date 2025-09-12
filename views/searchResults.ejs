@@ -1,0 +1,31 @@
+<%- include("./partials/head") %>
+<%- include("./partials/nav") %>
+
+<div class="container mt-5 pt-5">
+    <h2>Search Results for "<%= query %>"</h2>
+    <hr>
+
+    <% if (products.length === 0) { %>
+        <p>No products found.</p>
+    <% } else { %>
+        <div class="row">
+            <% products.forEach(product => { %>
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="<%= product.ProductImage %>" class="card-img-top" alt="Product Image">
+                        <div class="card-body">
+                            <h5 class="card-title"><%= product.productName %></h5>
+                            <p class="card-text">₹<%= product.price %></p>
+                            <a href="/product/<%= product._id %>" class="btn btn-primary">View</a>
+                        </div>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    <% } %>
+</div>
+<div>
+    <h4> &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;looking for something else ? <a href="/"> Go back -> </a></h4>
+</div>
+
+<%- include("./partials/script") %>

@@ -102,6 +102,74 @@ prouter.get("user/signin", async (req, res) => {
     res.render("signin");
 })
 
+
+
+
+// this is for search functionality
+prouter.get("/search", async (req, res) => {
+    try {
+        const query = req.query.q.trim();
+
+        if (!query) {
+            return res.render("searchResults", { query: "", products: [] });
+        }
+
+        const escapedQuery = query.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+        const regex = new RegExp(escapedQuery, "i");
+
+        const products = await Product.find({
+            $or: [
+                { productName: regex },
+                { description: regex },
+                { Keywords: regex }
+            ]
+        }).populate("createdBy");
+
+        res.render("searchResults", { query, products });
+    } catch (err) {
+        console.error("Error during search:", err);
+        res.status(500).send("Server Error");
+    }
+});
+
+prouter.get("/autocomplete", async (req, res) => {
+    try {
+        const query = req.query.q.trim();
+
+        if (!query || query.length < 1) return res.json([]);
+
+        const escapedQuery = query.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+        const regex = new RegExp(escapedQuery, "i");
+
+        const products = await Product.find({
+            $or: [
+                { productName: regex },
+                { Keywords: regex }
+            ]
+        }).limit(10);
+
+        const suggestions = new Set();
+
+        products.forEach(product => {
+            if (regex.test(product.productName)) {
+                suggestions.add(product.productName);
+            }
+
+            product.Keywords.forEach(keyword => {
+                if (regex.test(keyword)) {
+                    suggestions.add(keyword);
+                }
+            });
+        });
+
+        res.json(Array.from(suggestions));
+    } catch (err) {
+        console.error("Error during autocomplete:", err);
+        res.status(500).send("Server Error");
+    }
+});
+
+
 // routes/product.js (prouter)
 prouter.get("/:id", attachUser, async (req, res) => {
     try {
